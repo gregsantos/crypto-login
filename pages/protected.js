@@ -8,8 +8,6 @@ export default function Page() {
   const [users, setUsers] = useState()
 
   useEffect(() => {
-    console.log(`${process.env.NEXT_PUBLIC_URL}/protected`)
-
     const fetchData = async () => {
       const res = await fetch('/api/users')
       const json = await res.json()
