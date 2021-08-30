@@ -72,7 +72,7 @@ export default function Home() {
     <Layout>
       <div className={styles.container}>
         <Head>
-          <title>Prisma example with Vercel</title>
+          <title>Crypto Login example with FCL user signing</title>
           <link rel='icon' href='/favicon.png' />
         </Head>
 
