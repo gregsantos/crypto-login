@@ -5,7 +5,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .main {
@@ -26,11 +25,14 @@
   align-items: center;
 }
 
+.footer img {
+  margin-left: 0.5rem;
+}
+
 .footer a {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
 }
 
 .title a {
@@ -47,7 +49,7 @@
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 3rem;
 }
 
 .title,
@@ -74,43 +76,47 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  max-width: 800px;
+  max-width: 400px;
   margin-top: 3rem;
 }
 
 .card {
-  margin: 1rem;
-  padding: 1.5rem;
+  margin: 0.5rem;
+  flex-basis: 45%;
+  padding: 1rem;
   text-align: left;
   color: inherit;
   text-decoration: none;
   border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  width: 45%;
 }
 
-.card:hover,
-.card:focus,
-.card:active {
-  color: #0070f3;
-  border-color: #0070f3;
+.apiButton {
+  margin: 0.5rem;
+  flex-basis: 45%;
+  padding: 1rem;
+  color: white;
+  background-color: #0152ae;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
-.card h2 {
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
+.apiButton:hover,
+.apiButton:focus,
+.apiButton:active {
+  outline: none;
 }
 
-.card p {
-  margin: 0;
-  font-size: 1.25rem;
-  line-height: 1.5;
+.apiButton:hover {
+  background-color: #0071f2;
 }
 
 .logo {
   height: 1em;
-  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 @media (max-width: 600px) {
@@ -118,4 +124,59 @@
     width: 100%;
     flex-direction: column;
   }
+}
+
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.loader {
+  top: 30px;
+  right: 30px;
+  font-size: 3px;
+  position: fixed;
+  text-indent: -9999em;
+  border-top: 1.1em solid rgb(59, 177, 255);
+  border-right: 1.1em solid rgb(59, 177, 255);
+  border-bottom: 1.1em solid rgb(59, 177, 255);
+  border-left: 1.1em solid #ffffff;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.code {
+  background-color: black;
+  color: white;
+  max-height: 400px;
+  overflow: scroll;
+  font-size: 1rem;
 }
