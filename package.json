@@ -11,7 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@onflow/fcl": "^0.0.77-alpha.4",
+    "@onflow/fcl": "0.0.77-alpha.4",
     "@prisma/client": "^2.30.0",
     "cors": "^2.8.5",
     "next": "11.1.0",
