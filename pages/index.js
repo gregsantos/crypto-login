@@ -1,8 +1,10 @@
 import Head from 'next/head'
 import { useCallback, useState } from 'react'
 import { reauthenticate, currentUser } from '@onflow/fcl'
-import { signIn, signOut, useSession } from 'next-auth/client'
+import { signIn, useSession } from 'next-auth/client'
+import Image from 'next/image'
 import Layout from '../components/layout'
+import logo from '../public/logo.png'
 import styles from '../styles/Home.module.css'
 
 const fetchApi = endpoint => {
@@ -73,10 +75,11 @@ export default function Home() {
       <div className={styles.container}>
         <Head>
           <title>Crypto Login example with FCL user signing</title>
-          <link rel='icon' href='/favicon.png' />
+          <link rel='icon' href='/logo.png' />
         </Head>
 
         <main className={styles.main}>
+          <Image src={logo} alt='Flow Logo' />
           <h1 className={styles.title}>Crypto Login Example</h1>
           {!session && (
             <>
