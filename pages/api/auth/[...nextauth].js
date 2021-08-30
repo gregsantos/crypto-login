@@ -21,11 +21,11 @@ const options = {
       //  compSigs: { address: '', keyId: '', signature: '' },
       //},
       async authorize(credentials, req) {
-        const { addr, compSigs } = credentials
+        const { addr, compSigs, msg } = credentials
 
-        const MSG = Buffer.from('FOO').toString('hex')
-        if (await verify(MSG, compSigs))
-          console.log(await verify(MSG, compSigs))
+        // const MSG = Buffer.from('FOO').toString('hex')
+        if (await verify(msg, compSigs))
+          console.log(await verify(msg, compSigs))
 
         const baseUrl = process.env.BASE_URL
 

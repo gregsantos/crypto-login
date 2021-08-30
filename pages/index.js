@@ -18,27 +18,35 @@ const fetchApi = endpoint => {
 
 export const authenticate = async () => {
   const currentUser = await reauthenticate()
-  const compSigs = await sign()
-  loginWithCreds(currentUser, compSigs)
+  const MSG = `
+    Hi there from crypto-login! 
+    Sign this message to prove you have 
+    access to this wallet and we’ll log 
+    you in with address ${currentUser.addr}
+    This won’t cost you any Flow.
+  `
+  const msg = Buffer.from(MSG).toString('hex')
+  const compSigs = await sign(msg)
+  loginWithCreds(currentUser, compSigs, msg)
 }
 
-async function sign() {
-  const MSG = 'FOO'
+async function sign(msg) {
   return await currentUser()
-    .signUserMessage(Buffer.from(MSG).toString('hex'))
+    .signUserMessage(msg)
     .catch(e => {
       throw e
     })
     .then(cs => cs)
 }
 
-async function loginWithCreds({ addr }, compSigs) {
+async function loginWithCreds({ addr }, compSigs, msg) {
   try {
     const resp = await signIn('credentials', {
       // redirect: false,
       callbackUrl: `${process.env.NEXT_PUBLIC_URL}/protected`,
       compSigs: JSON.stringify(compSigs),
       addr: addr,
+      msg: msg,
     })
     console.log('AUTH RES', resp)
   } catch (error) {
