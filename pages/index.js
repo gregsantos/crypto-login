@@ -42,7 +42,6 @@ async function sign(msg) {
 async function loginWithCreds({ addr }, compSigs, msg) {
   try {
     const resp = await signIn('credentials', {
-      // redirect: false,
       callbackUrl: `${process.env.NEXT_PUBLIC_URL}/protected`,
       compSigs: JSON.stringify(compSigs),
       addr: addr,

@@ -45,7 +45,7 @@ export default function Header() {
               <span className={styles.signedInText}>
                 <small>Signed in as</small>
                 <br />
-                <strong>{session.user.id}</strong>
+                <strong>{session.user.address}</strong>
               </span>
               <a
                 href={`/`}
