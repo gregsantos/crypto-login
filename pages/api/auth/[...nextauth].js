@@ -3,12 +3,11 @@ import Providers from 'next-auth/providers'
 import * as fcl from '@onflow/fcl'
 
 const verify = async (msg, compSigs) => {
-  return await fcl
-    .verifyUserSignatures(msg, JSON.parse(compSigs))
-    .then(console.log)
-    .catch(e => {
-      throw new Error('Error verifying signatures', e)
-    })
+  try {
+    return await fcl.verifyUserSignatures(msg, JSON.parse(compSigs))
+  } catch (e) {
+    return false
+  }
 }
 
 const options = {
@@ -21,19 +20,22 @@ const options = {
         const baseUrl = process.env.BASE_URL
 
         const verified = await verify(msg, compSigs)
-        console.log(verified)
 
-        const res = await fetch(`${baseUrl}/api/login`, {
-          method: 'POST',
-          body: JSON.stringify(credentials),
-          headers: { 'Content-Type': 'application/json' },
-        })
-        const user = await res.json()
+        if (verified) {
+          const res = await fetch(`${baseUrl}/api/login`, {
+            method: 'POST',
+            body: JSON.stringify(credentials),
+            headers: { 'Content-Type': 'application/json' },
+          })
 
-        if (res.ok && user) {
-          return user
+          const user = await res.json()
+          if (res.ok && user) {
+            return user
+          } else {
+            throw new Error('error logging in')
+          }
         } else {
-          return null
+          throw new Error('error verifying signature')
         }
       },
     }),
