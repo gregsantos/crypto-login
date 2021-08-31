@@ -1,41 +1,26 @@
 import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
-import * as fcl from '@onflow/fcl'
-
-const verify = async (msg, compSigs) => {
-  try {
-    return await fcl.verifyUserSignatures(msg, JSON.parse(compSigs))
-  } catch (e) {
-    return false
-  }
-}
 
 const options = {
   providers: [
     Providers.Credentials({
       name: 'Crypto Wallet',
 
-      async authorize(credentials, req) {
-        const { compSigs, msg } = credentials
+      async authorize(credentials) {
         const baseUrl = process.env.BASE_URL
 
-        const verified = await verify(msg, compSigs)
+        const res = await fetch(`${baseUrl}/api/login`, {
+          method: 'POST',
+          body: JSON.stringify(credentials),
+          headers: { 'Content-Type': 'application/json' },
+        })
 
-        if (verified) {
-          const res = await fetch(`${baseUrl}/api/login`, {
-            method: 'POST',
-            body: JSON.stringify(credentials),
-            headers: { 'Content-Type': 'application/json' },
-          })
+        const user = await res.json()
 
-          const user = await res.json()
-          if (res.ok && user) {
-            return user
-          } else {
-            throw new Error('error logging in')
-          }
+        if (res.ok && user) {
+          return user
         } else {
-          throw new Error('error verifying signature')
+          throw new Error('error logging in')
         }
       },
     }),

@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useCallback, useState } from 'react'
-import { reauthenticate, currentUser } from '@onflow/fcl'
+import { reauthenticate, currentUser, verifyUserSignatures } from '@onflow/fcl'
 import { signIn, useSession } from 'next-auth/client'
 import Image from 'next/image'
 import Layout from '../components/layout'
@@ -27,7 +27,12 @@ export const authenticate = async () => {
   `
   const msg = Buffer.from(MSG).toString('hex')
   const compSigs = await sign(msg)
-  loginWithCreds(currentUser, compSigs, msg)
+  try {
+    const verified = await verifyUserSignatures(msg, compSigs)
+    verified && loginWithCreds(currentUser)
+  } catch (e) {
+    console.log('Error verifying signatures', e)
+  }
 }
 
 async function sign(msg) {
@@ -39,14 +44,11 @@ async function sign(msg) {
     .then(cs => cs)
 }
 
-async function loginWithCreds({ addr }, compSigs, msg) {
+async function loginWithCreds({ addr }) {
   try {
     const resp = await signIn('credentials', {
-      // redirect: false,
       callbackUrl: `${process.env.NEXT_PUBLIC_URL}/protected`,
-      compSigs: JSON.stringify(compSigs),
       addr: addr,
-      msg: msg,
     })
     console.log('AUTH RES', resp)
   } catch (error) {
