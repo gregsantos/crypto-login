@@ -7,6 +7,16 @@ import Layout from '../components/layout'
 import logo from '../public/logo.png'
 import styles from '../styles/Home.module.css'
 
+const MSG = Buffer.from(
+  `
+  Hi there from crypto-login! 
+  Sign this message to prove you have 
+  access to this wallet and we’ll log 
+  you in with address ${currentUser.addr}
+  This won’t cost you any Flow.
+`
+).toString('hex')
+
 const fetchApi = endpoint => {
   return fetch(`/api/${endpoint}`).then(response => {
     if (!response.ok) {
@@ -16,43 +26,28 @@ const fetchApi = endpoint => {
   })
 }
 
-export const authenticate = async () => {
-  const currentUser = await reauthenticate()
-  const MSG = `
-    Hi there from crypto-login! 
-    Sign this message to prove you have 
-    access to this wallet and we’ll log 
-    you in with address ${currentUser.addr}
-    This won’t cost you any Flow.
-  `
-  const msg = Buffer.from(MSG).toString('hex')
-  const compSigs = await sign(msg)
-  try {
-    const verified = await verifyUserSignatures(msg, compSigs)
-    verified && loginWithCreds(currentUser)
-  } catch (e) {
-    console.log('Error verifying signatures', e)
-  }
-}
-
-async function sign(msg) {
+async function sign() {
   return await currentUser()
-    .signUserMessage(msg)
+    .signUserMessage(MSG)
     .catch(e => {
       throw e
     })
     .then(cs => cs)
 }
 
-async function loginWithCreds({ addr }) {
-  try {
-    const resp = await signIn('credentials', {
+export const authenticate = async () => {
+  const { addr } = await reauthenticate()
+  const compSigs = await sign()
+  console.log(compSigs)
+  if (compSigs) {
+    await signIn('credentials', {
       callbackUrl: `${process.env.NEXT_PUBLIC_URL}/protected`,
       addr: addr,
+      msg: MSG,
+      compSigs: JSON.stringify(compSigs),
     })
-    console.log('AUTH RES', resp)
-  } catch (error) {
-    console.log('AUTH ERR', error)
+  } else {
+    console.log('Error getting signatures')
   }
 }
 

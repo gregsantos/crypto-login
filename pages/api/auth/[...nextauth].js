@@ -1,5 +1,20 @@
 import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
+import { config, verifyUserSignatures } from '@onflow/fcl'
+
+config({
+  'accessNode.api': 'https://access-testnet.onflow.org',
+  'discovery.wallet': 'https://fcl-discovery.onflow.org/testnet/authn',
+})
+
+async function verifySigs({ msg, compSigs }) {
+  try {
+    return await verifyUserSignatures(msg, JSON.parse(compSigs))
+  } catch (e) {
+    console.log('Error fcl verifying signatures', e)
+    return false
+  }
+}
 
 const options = {
   providers: [
@@ -9,19 +24,23 @@ const options = {
       async authorize(credentials) {
         const baseUrl = process.env.BASE_URL
 
-        const res = await fetch(`${baseUrl}/api/login`, {
-          method: 'POST',
-          body: JSON.stringify(credentials),
-          headers: { 'Content-Type': 'application/json' },
-        })
+        const verified = await verifySigs(credentials)
+        if (verified) {
+          const res = await fetch(`${baseUrl}/api/login`, {
+            method: 'POST',
+            body: JSON.stringify(credentials),
+            headers: { 'Content-Type': 'application/json' },
+          })
 
-        const user = await res.json()
+          const user = await res.json()
 
-        if (res.ok && user) {
-          return user
-        } else {
-          throw new Error('error logging in')
+          if (res.ok && user) {
+            return user
+          } else {
+            throw new Error('Error logging in')
+          }
         }
+        throw new Error('Error verifying signatures')
       },
     }),
   ],
@@ -46,7 +65,7 @@ const options = {
     // Use JSON Web Tokens for session instead of database sessions.
     // This option can be used with or without a database for users/accounts.
     // Note: `jwt` is automatically set to `true` if no database is specified.
-    jwt: true,
+    // jwt: true,
   },
 
   jwt: {
