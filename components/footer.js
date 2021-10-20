@@ -1,4 +1,4 @@
-import styles from './footer.module.css'
+import styles from "./footer.module.css"
 
 export default function Footer() {
   return (
@@ -7,7 +7,7 @@ export default function Footer() {
       <ul className={styles.navItems}>
         <li className={styles.navItem}>
           <a
-            href='https://github.com/onflow/fcl-js/blob/master/docs/user-signature.mdx'
+            href='https://github.com/onflow/fcl-js/blob/master/docs/reference/user-signatures.mdx'
             target='_blank'
             rel='noreferrer'
           >
